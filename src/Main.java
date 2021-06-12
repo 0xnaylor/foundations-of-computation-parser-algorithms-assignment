@@ -6,12 +6,17 @@
  * 
  */
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 import computation.contextfreegrammar.*;
+import computation.derivation.Derivation;
 import computation.parser.*;
 import computation.parsetree.*;
+
+import javax.naming.Context;
 
 class Main {
 
@@ -32,24 +37,20 @@ class Main {
 		// Below is the kind of code you might want to write to test your parser
 
 		ContextFreeGrammar cfg = MyGrammar.makeGrammar();
-//		System.out.println("Is cfg in cnf: " + cfg.isInChomskyNormalForm());
+		Word word1 = new Word("1+0");
+		Word word2 = new Word("01");
+		Word word3 = new Word("*-*");
+		Parser parser = new Parser();
 
-		System.out.println("cfg: \n" + cfg);
-
-		System.out.println("Is cfg in cnf: ");
-		assert(cfg.isInChomskyNormalForm());
-
-
-		assert(cfg.equals(new ContextFreeGrammar(cfg.getRules())));
+		System.out.println("Is '" + word1 + "' recognised by the CFG: " + parser.isInLanguage(cfg, word1));
+		System.out.println("Is '" + word2 + "' recognised by the CFG: " + parser.isInLanguage(cfg, word2));
+		System.out.println("Is '" + word3 + "' recognised by the CFG: " + parser.isInLanguage(cfg, word3));
 
 
-//		Word testString = new Word("x+x");
-//
-//		System.out.println("Test word: " + testString);
-//
-//		// this should print true!
-//		System.out.println("Is test string in language: " + parser.isInLanguage(cfg, testString));
+
 	}
+
+
 
 
 
