@@ -32,10 +32,23 @@ class Main {
 		// Below is the kind of code you might want to write to test your parser
 
 		ContextFreeGrammar cfg = MyGrammar.makeGrammar();
-		Word testString = new Word("x+x");
+//		System.out.println("Is cfg in cnf: " + cfg.isInChomskyNormalForm());
 
-		// this should print true!
-		System.out.println(parser.isInLanguage(cfg, testString));
+		System.out.println("cfg: \n" + cfg);
+
+		System.out.println("Is cfg in cnf: ");
+		assert(cfg.isInChomskyNormalForm());
+
+
+		assert(cfg.equals(new ContextFreeGrammar(cfg.getRules())));
+
+
+//		Word testString = new Word("x+x");
+//
+//		System.out.println("Test word: " + testString);
+//
+//		// this should print true!
+//		System.out.println("Is test string in language: " + parser.isInLanguage(cfg, testString));
 	}
 
 
