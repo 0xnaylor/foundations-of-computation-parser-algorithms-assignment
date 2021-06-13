@@ -112,6 +112,4 @@ public class Derivation implements Iterable<Step> {
 		Collections.reverse(reverse);
 		return reverse.iterator();
 	}
-
-
 }
