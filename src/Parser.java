@@ -4,6 +4,7 @@ import computation.parsetree.*;
 import computation.derivation.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Parser implements IParser {
@@ -32,52 +33,46 @@ public class Parser implements IParser {
 
     List<Rule> rules = cfg.getRules();
     List<Derivation> nextDerivations = new ArrayList<>();
-
+    int derivationStepIndex = 0;
     int stepsToPerform = (2 * w.length()) -1;
     for(int i = 1 ; i <= stepsToPerform ; i++) {
-      nextDerivations = generateNextDerivations(currentDerivations, rules);
+
+      nextDerivations = generateNextDerivations(currentDerivations, rules, derivationStepIndex);
       System.out.println("Step " + i);
       System.out.println("Derivations produced: " + nextDerivations.size());
       System.out.println(returnPrintableDerivation(nextDerivations));
       currentDerivations = nextDerivations;
+      derivationStepIndex+=1;
     }
 
     boolean isInLanguage = false;
 
+    int numOfDerivations = 0;
+
     for (Derivation derivation:nextDerivations) {
       if(derivation.getLatestWord().equals(w)){
+        numOfDerivations+=1;
         isInLanguage = true;
         correctDerivation = derivation;
       }
     }
 
     System.out.println("Print correct Derivation");
-    // find a way to print out the derivation correctly.
-    while (correctDerivation.iterator().hasNext()) {
-      System.out.println(correctDerivation.iterator().next().toString());
-    }
-
+    System.out.println(returnPrintableDerivation(correctDerivation));
+    System.out.println("Number of different Derivations found: " + numOfDerivations);
 
     return isInLanguage;
+  }
 
-    // 5. Repeat step 3 until we have 2n-1 derivations.
-    // 6. Loop through the final list and check if the latest word for each Derivation matches the target word.
+  private String returnPrintableDerivation(Derivation derivation) {
 
-
-//    System.out.println("Derivation Length: " + stepsToPerform);
-
-    // Add the start variable to the list
-//    int stepsToPerform = (2 * w.length()) -1;
-//    currentStep.add(new Word(cfg.getStartVariable()));
-//    System.out.println("Step 0 \n" + currentStep);
-//
-//    for(int i = 1 ; i <= stepsToPerform ; i++) {
-//      List<Word> nextStep = generateNextStep(currentStep, rules);
-//      System.out.println("Step " + i);
-//      System.out.println("Strings produced: " + nextStep.size());
-//      System.out.println(nextStep);
-//      currentStep = nextStep;
-//    }
+    StringBuilder sb = new StringBuilder();
+    Iterator iterator = derivation.iterator();
+    while (iterator.hasNext()) {
+      sb.append(iterator.next());
+      sb.append("\n");
+    }
+    return sb.toString();
   }
 
   private String returnPrintableDerivation(List<Derivation> nextDerivations) {
@@ -89,23 +84,24 @@ public class Parser implements IParser {
     return sb.toString();
   }
 
-  private List<Derivation> generateNextDerivations(List<Derivation> currentDerivations, List<Rule> rules) {
+  private List<Derivation> generateNextDerivations(List<Derivation> currentDerivations, List<Rule> rules, int derivationStepIndex) {
     List<Derivation> nextDerivations = new ArrayList<>();
 
+    // for each Derivation in currentDerivation list
     for (Derivation derivation: currentDerivations) {
       Word word = derivation.getLatestWord();
 
+      // for each Variable in the word
         for (int i = 0; i < word.length(); i++) {
-
           Symbol s = word.get(i);
           if (!s.isTerminal()) {
-
             for (Rule rule : rules) {
+              // if the Variable on the left of the rule matches the currently selected Variable in the word
               if (rule.getVariable().equals(s)) {
-                Derivation newDerivation = new Derivation(derivation);
-                Word newWord = word.replace(i, rule.getExpansion());
-                newDerivation.addStep(newWord, rule, 1);
-                nextDerivations.add(newDerivation);
+                Derivation newDerivation = new Derivation(derivation);      // instantiate a new Derivation from the existing one
+                Word newWord = word.replace(i, rule.getExpansion());        // perform the substitution
+                newDerivation.addStep(newWord, rule, derivationStepIndex);  // add a step to the new Derivation.
+                nextDerivations.add(newDerivation);                         // add the new Derivation to the nextDerivations list.
               }
             }
           }
@@ -119,31 +115,6 @@ public class Parser implements IParser {
     ParseTreeNode testNode = new ParseTreeNode(cfg.getStartVariable());
 
     return testNode;
-  }
-
-  private static List<Word> generateNextStep(List<Word> currentStep, List<Rule> rules) {
-
-    // the new list to be created by applying one more derivation step to all words in current step.
-    List<Word> nextStep = new ArrayList<>();
-
-    for (Word word : currentStep) {
-      int wordLength = word.length();
-      for (int i = 0; i < wordLength; i++) {
-        Symbol s = word.get(i);
-
-        if (!s.isTerminal()) {
-
-          for (Rule rule : rules
-          ) {
-            if (rule.getVariable().equals(s)) {
-              // take the current word and replace the variable in question with the rule expansion and add to new string.
-              nextStep.add(word.replace(i, rule.getExpansion()));
-            }
-          }
-        }
-      }
-    }
-    return nextStep;
   }
 
 }
