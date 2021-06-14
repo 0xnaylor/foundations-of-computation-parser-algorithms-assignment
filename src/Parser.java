@@ -9,8 +9,6 @@ import java.util.List;
 
 public class Parser implements IParser {
 
-  Derivation correctDerivation = null;
-
   public boolean isInLanguage(ContextFreeGrammar cfg, Word w){
 
     // 1. Create a new list of type Derivation
@@ -28,38 +26,31 @@ public class Parser implements IParser {
     Derivation derivation_0 = new Derivation(new Word(cfg.getStartVariable()));
     currentDerivations.add(derivation_0);
 
-    // sanity check
-    System.out.println("Latest Word: " + currentDerivations.get(0).getLatestWord());
-
     List<Rule> rules = cfg.getRules();
     List<Derivation> nextDerivations = new ArrayList<>();
     int derivationStepIndex = 0;
     int stepsToPerform = (2 * w.length()) -1;
     for(int i = 1 ; i <= stepsToPerform ; i++) {
-
       nextDerivations = generateNextDerivations(currentDerivations, rules, derivationStepIndex);
-      System.out.println("Step " + i);
-      System.out.println("Derivations produced: " + nextDerivations.size());
-      System.out.println(returnPrintableDerivation(nextDerivations));
       currentDerivations = nextDerivations;
       derivationStepIndex+=1;
     }
 
     boolean isInLanguage = false;
-
     int numOfDerivations = 0;
-
+    List<Derivation> allPossibleDerivations = new ArrayList<>();
     for (Derivation derivation:nextDerivations) {
       if(derivation.getLatestWord().equals(w)){
         numOfDerivations+=1;
         isInLanguage = true;
-        correctDerivation = derivation;
+        allPossibleDerivations.add(derivation);
       }
     }
 
-    System.out.println("Print correct Derivation");
-    System.out.println(returnPrintableDerivation(correctDerivation));
-    System.out.println("Number of different Derivations found: " + numOfDerivations);
+    for (Derivation derivation:allPossibleDerivations) {
+      System.out.println(returnPrintableDerivation(derivation));
+    }
+    System.out.println("Found " + numOfDerivations + " different derivations for word: " + w + "\n");
 
     return isInLanguage;
   }
@@ -67,19 +58,9 @@ public class Parser implements IParser {
   private String returnPrintableDerivation(Derivation derivation) {
 
     StringBuilder sb = new StringBuilder();
-    Iterator iterator = derivation.iterator();
-    while (iterator.hasNext()) {
-      sb.append(iterator.next());
+    for (Step step : derivation) {
+      sb.append(step);
       sb.append("\n");
-    }
-    return sb.toString();
-  }
-
-  private String returnPrintableDerivation(List<Derivation> nextDerivations) {
-    StringBuilder sb = new StringBuilder();
-    for (Derivation derivation: nextDerivations) {
-      sb.append(derivation.getLatestWord().toString());
-      sb.append(" ,");
     }
     return sb.toString();
   }
