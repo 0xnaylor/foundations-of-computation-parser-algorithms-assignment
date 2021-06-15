@@ -33,7 +33,8 @@ public class Parser implements IParser {
 
     return isInLanguage;
   }
-
+  
+  //TODO handle rules that expand to epsilon e.g. A₀ → ε
   public List<Derivation> getAllPossibleDerivations(ContextFreeGrammar cfg, Word w){
     List<Derivation> currentDerivations = new ArrayList<>();
     Derivation derivation_0 = new Derivation(new Word(cfg.getStartVariable()));
@@ -100,85 +101,52 @@ public class Parser implements IParser {
     // get the derivations for the word
     List<Derivation> allPossibleDerivations = getAllPossibleDerivations(cfg, w);
 
-    // get the symbols required to build a parse tree
-//    Set<Variable> variables = cfg.getVariables();
-//    Set<Terminal> terminals = cfg.getTerminals();
-
     Derivation derivation = allPossibleDerivations.get(0);
 
     System.out.println("The derivation: \n");
     System.out.println(returnPrintableDerivation(derivation));
 
-    // generate ParseTreeNodes for each terminal in the word
-//    System.out.println("terminals: ");
-//    List<ParseTreeNode> terminalParseTreeNodes = new ArrayList<>();
-//    for (Symbol symbol:w) {
-//      terminalParseTreeNodes.add(new ParseTreeNode(symbol));
-//      System.out.println(symbol);
-//    }
-//
-//    List<ParseTreeNode> singleChildNodes = new ArrayList<>();
-//    for (ParseTreeNode parseTreeNode:terminalParseTreeNodes) {
-//      for (Step step : derivation) {
-//
-//        Rule stepRule = step.getRule();
-//
-//        if(stepRule.getExpansion().equals(parseTreeNode.getSymbol())) {
-//          singleChildNodes.add(new ParseTreeNode(stepRule.getVariable(), parseTreeNode));
-//        }
-//      }
-//    }
-
-//    List<ParseTreeNode> nodes = new ArrayList<>();
-    Map<Integer, ParseTreeNode> nodes = new HashMap<Integer, ParseTreeNode>();
-
+    Map<Symbol, ParseTreeNode> nodes = new HashMap<>();
 
     for (Step step:derivation) {
 
+      // if the start variable has been reached, i.e. step index -1 then we
+      // have nothing left to add to the tree
+      if(step.getIndex() < 0) { continue;}
+
       Rule rule = step.getRule();
 
-      if(step.getIndex() < 0) {
-        continue;
-      }
-
-      // if the rule has a single terminal in its expansion
-      // - create a childless node for that terminal
-      // - create a single child node for the rules variable with the terminal as its child.
-      // - Store variable node in ArrayList using step index
+      // create single-child and childless nodes
       if(rule.getExpansion().isTerminal()){
+
         Symbol terminal = rule.getExpansion().get(0);
         ParseTreeNode childNode = new ParseTreeNode(terminal);
+
         Symbol variable = rule.getVariable();
         ParseTreeNode parentNode = new ParseTreeNode(variable, childNode);
-        nodes.put(step.getIndex(), parentNode);
-        System.out.println(parentNode);
+        nodes.put(variable, parentNode);
       }
 
-      // if rule has the empty string (epsilon) in its expansion
-      // - add a new emptyParseTree node to the ArrayList at the step index
+      // create emptyParseTree node
       if(rule.getExpansion().equals(Word.emptyWord)){
-        nodes.put(step.getIndex(), ParseTreeNode.emptyParseTree(rule.getVariable()));
+        Variable variable = rule.getVariable();
+        nodes.put(variable, ParseTreeNode.emptyParseTree(variable));
       }
 
-      // if the rule has two variables in its expansion
-      // - create two single child nodes for those two variables
-      // - create a two-child node for the rules variable
+      // create two-children nodes
       if(rule.getExpansion().length() == 2) {
+
         Word expansion = rule.getExpansion();
+        ParseTreeNode childNode1 = nodes.get(expansion.get(0));
+        ParseTreeNode childNode2 = nodes.get(expansion.get(1));
 
-        // create child nodes
-        ParseTreeNode childNode1 = nodes.get(step.getIndex()+1);
-        ParseTreeNode childNode2 = nodes.get(step.getIndex()+2);
-
-        // create parent node and add to nodes ArrayList
+        Variable variable = rule.getVariable();
         ParseTreeNode parentNode = new ParseTreeNode(rule.getVariable(), childNode1, childNode2);
-        nodes.put(step.getIndex(), parentNode);
-        System.out.println(parentNode);
-
+        nodes.put(variable, parentNode);
       }
     }
 
-    return nodes.get(0);
+    return nodes.get(cfg.getStartVariable());
   }
 
 }
