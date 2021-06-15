@@ -20,9 +20,24 @@ public class Parser implements IParser {
     //      - Store the new Derivation Object in a new list
     // 5. Repeat step 3 until we have 2n-1 derivations.
     // 6. Loop through the final list and check if the latest word for each Derivation matches the target word.
+    boolean isInLanguage = false;
 
+    List<Derivation> allPossibleDerivations = getAllPossibleDerivations(cfg, w);
+
+    if (!allPossibleDerivations.isEmpty()) {
+      isInLanguage = true;
+    }
+
+    for (Derivation derivation:allPossibleDerivations) {
+      System.out.println(returnPrintableDerivation(derivation));
+    }
+    System.out.println("Found " + allPossibleDerivations.size() + " different derivations for word: " + w + "\n");
+
+    return isInLanguage;
+  }
+
+  public List<Derivation> getAllPossibleDerivations(ContextFreeGrammar cfg, Word w){
     List<Derivation> currentDerivations = new ArrayList<>();
-
     Derivation derivation_0 = new Derivation(new Word(cfg.getStartVariable()));
     currentDerivations.add(derivation_0);
 
@@ -36,23 +51,14 @@ public class Parser implements IParser {
       derivationStepIndex+=1;
     }
 
-    boolean isInLanguage = false;
-    int numOfDerivations = 0;
     List<Derivation> allPossibleDerivations = new ArrayList<>();
     for (Derivation derivation:nextDerivations) {
       if(derivation.getLatestWord().equals(w)){
-        numOfDerivations+=1;
-        isInLanguage = true;
         allPossibleDerivations.add(derivation);
       }
     }
 
-    for (Derivation derivation:allPossibleDerivations) {
-      System.out.println(returnPrintableDerivation(derivation));
-    }
-    System.out.println("Found " + numOfDerivations + " different derivations for word: " + w + "\n");
-
-    return isInLanguage;
+    return allPossibleDerivations;
   }
 
   private String returnPrintableDerivation(Derivation derivation) {

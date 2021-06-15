@@ -46,11 +46,12 @@ class Main {
 		System.out.println("Is '" + word2 + "' recognised by the CFG: " + parser.isInLanguage(cfg, word2));
 		System.out.println("Is '" + word3 + "' recognised by the CFG: " + parser.isInLanguage(cfg, word3));
 
-//		System.out.println("Parse Tree: \n");
-//		System.out.println(parser.generateParseTree(cfg, word1));
 
-//		System.out.println(ContextFreeGrammar.simpleCNF());
-//		System.out.println(cfg);
+		System.out.println("Parse Tree: \n");
+		System.out.println(parser.generateParseTree(cfg, word1));
+
+		System.out.println(ContextFreeGrammar.simpleCNF());
+		System.out.println(cfg);
 
 	}
 
