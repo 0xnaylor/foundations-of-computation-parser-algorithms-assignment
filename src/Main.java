@@ -37,6 +37,18 @@ class Main {
 		// Below is the kind of code you might want to write to test your parser
 
 		ContextFreeGrammar cfg = MyGrammar.makeGrammar();
+
+//		ContextFreeGrammar simpleCnf = ContextFreeGrammar.simpleCNF();
+//		Word testWord = new Word("0011");
+//		System.out.println("Is '" + testWord + "' recognised by the simpleCnf: " + parser.isInLanguage(simpleCnf, testWord));
+//
+//		Word testWord2 = Word.emptyWord;
+//		System.out.println("Is '" + testWord2 + "' recognised by the simpleCnf: " + parser.isInLanguage(simpleCnf, testWord2));
+//
+//
+//		System.out.println("Here is the grammar");
+//		System.out.println(simpleCnf);
+
 		Word word1 = new Word("1+0");
 		Word word2 = new Word("01");
 		Word word3 = new Word("*-*");
@@ -47,8 +59,13 @@ class Main {
 //		System.out.println("Is '" + word3 + "' recognised by the CFG: " + parser.isInLanguage(cfg, word3));
 
 
-		System.out.println("Parse Tree: \n");
-		System.out.println(parser.generateParseTree(cfg, word1));
+//		System.out.println("Parse Tree: \n");
+//		System.out.println(parser.generateParseTree(cfg, word1));
+
+		System.out.println(cfg);
+		IParser ckyParser = new CKYParser();
+		ckyParser.isInLanguage(cfg, word1);
+
 
 	}
 

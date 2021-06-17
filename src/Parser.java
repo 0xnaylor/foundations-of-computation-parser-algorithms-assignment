@@ -26,14 +26,14 @@ public class Parser implements IParser {
       isInLanguage = true;
     }
 
-    for (Derivation derivation:allPossibleDerivations) {
-      System.out.println(returnPrintableDerivation(derivation));
-    }
-    System.out.println("Found " + allPossibleDerivations.size() + " different derivations for word: " + w + "\n");
+//    for (Derivation derivation:allPossibleDerivations) {
+//      System.out.println(returnPrintableDerivation(derivation));
+//    }
+//    System.out.println("Found " + allPossibleDerivations.size() + " different derivations for word: " + w + "\n");
 
     return isInLanguage;
   }
-  
+
   //TODO handle rules that expand to epsilon e.g. A₀ → ε
   public List<Derivation> getAllPossibleDerivations(ContextFreeGrammar cfg, Word w){
     List<Derivation> currentDerivations = new ArrayList<>();
@@ -78,20 +78,20 @@ public class Parser implements IParser {
       Word word = derivation.getLatestWord();
 
       // for each Variable in the word
-        for (int i = 0; i < word.length(); i++) {
-          Symbol s = word.get(i);
-          if (!s.isTerminal()) {
-            for (Rule rule : rules) {
-              // if the Variable on the left of the rule matches the currently selected Variable in the word
-              if (rule.getVariable().equals(s)) {
-                Derivation newDerivation = new Derivation(derivation);      // instantiate a new Derivation from the existing one
-                Word newWord = word.replace(i, rule.getExpansion());        // perform the substitution
-                newDerivation.addStep(newWord, rule, derivationStepIndex);  // add a step to the new Derivation.
-                nextDerivations.add(newDerivation);                         // add the new Derivation to the nextDerivations list.
-              }
+      for (int i = 0; i < word.length(); i++) {
+        Symbol s = word.get(i);
+        if (!s.isTerminal()) {
+          for (Rule rule : rules) {
+            // if the Variable on the left of the rule matches the currently selected Variable in the word
+            if (rule.getVariable().equals(s)) {
+              Derivation newDerivation = new Derivation(derivation);      // instantiate a new Derivation from the existing one
+              Word newWord = word.replace(i, rule.getExpansion());        // perform the substitution
+              newDerivation.addStep(newWord, rule, derivationStepIndex);  // add a step to the new Derivation.
+              nextDerivations.add(newDerivation);                         // add the new Derivation to the nextDerivations list.
             }
           }
         }
+      }
     }
     return nextDerivations;
   }
@@ -103,8 +103,8 @@ public class Parser implements IParser {
 
     Derivation derivation = allPossibleDerivations.get(0);
 
-    System.out.println("The derivation: \n");
-    System.out.println(returnPrintableDerivation(derivation));
+//    System.out.println("The derivation: \n");
+//    System.out.println(returnPrintableDerivation(derivation));
 
     Map<Symbol, ParseTreeNode> nodes = new HashMap<>();
 
