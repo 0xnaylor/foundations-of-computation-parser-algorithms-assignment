@@ -64,7 +64,17 @@ class Main {
 
 		System.out.println(cfg);
 		IParser ckyParser = new CKYParser();
-		ckyParser.isInLanguage(cfg, word1);
+//		System.out.println("is " + word1 + " in cfg: "+ ckyParser.isInLanguage(cfg, word1));
+
+		Word word4 = new Word("1*-0*-1+0*-1");
+		Word word5 = new Word("0+-1*-0+1*1");
+		Word word6 = new Word("1*0+--1+0*1");
+		Word word7 = new Word("1*0+0-1+1+0+-0");
+
+		System.out.println("is " + word4 + " in cfg: "+ ckyParser.isInLanguage(cfg, word4));
+		System.out.println("is " + word5 + " in cfg: "+ ckyParser.isInLanguage(cfg, word5));
+		System.out.println("is " + word6 + " in cfg: "+ ckyParser.isInLanguage(cfg, word6));
+		System.out.println("is " + word4 + " in cfg: "+ ckyParser.isInLanguage(cfg, word7));
 
 
 	}
