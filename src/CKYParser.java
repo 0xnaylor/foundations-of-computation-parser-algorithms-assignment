@@ -1,12 +1,12 @@
 import computation.contextfreegrammar.*;
 import computation.parser.IParser;
 import computation.parsetree.ParseTreeNode;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CKYParser implements IParser {
+
+    ArrayList<ArrayList<ArrayList<Symbol>>> derivationTable = new ArrayList<>();
 
     @Override
     public boolean isInLanguage(ContextFreeGrammar cfg, Word w) {
@@ -15,15 +15,10 @@ public class CKYParser implements IParser {
         // and each cell contains an ArrayList of symbols
         int wordLen = w.length();
 
-        //initialise table
-        int x_axis_len = wordLen;
-        int y_axis_len = wordLen;
-        ArrayList<ArrayList<ArrayList<Symbol>>> table1 = new ArrayList<>(x_axis_len);
-
-        for(int i=0; i<y_axis_len; i++) {
-            table1.add(new ArrayList<>(y_axis_len));
-            for(int j=0; j<x_axis_len; j++) {
-                table1.get(i).add(new ArrayList<>());
+        for(int i=0; i<wordLen; i++) {
+            derivationTable.add(new ArrayList<>(wordLen));
+            for(int j=0; j<wordLen; j++) {
+                derivationTable.get(i).add(new ArrayList<>());
             }
         }
 
@@ -43,12 +38,12 @@ public class CKYParser implements IParser {
         // For each variable A:
         // Test whether A->b is a rule, where b = the i'th terminal in the word
         // If so, place A in table(i,i)
-        for(int i=0;i<x_axis_len;i++){
+        for(int i=0;i<wordLen;i++){
             for (Rule rule:rules) {
                 Symbol expansion = rule.getExpansion().get(0);
                 Symbol terminal = w.get(i);
                if(expansion.equals(terminal)){
-                   table1.get(i).get(i).add(rule.getVariable());
+                   derivationTable.get(i).get(i).add(rule.getVariable());
                }
             }
 
@@ -56,16 +51,17 @@ public class CKYParser implements IParser {
 
         // generate next rows in table
         // l = length of substring
-        for(int l=2; l<=wordLen;l++){
-            for(int i=0;i<(wordLen-l+1);i++){ // start of Substring
-                int subStringEnd = i+l-1;
-                for(int k=i; k<subStringEnd; k++) {
+        int n = wordLen;
+        for(int l=2; l<=n;l++){ // loop through sub strings of length 2 up to the full word
+            for(int i=1;i<=(n-l+1);i++){ // substring start
+                int j = i+l-1; // generate a substring end based on substring start and substring length
+                for(int k=i; k<=j-1; k++) { // substring end
                     for (Rule rule:rules) {
                         if(rule.getExpansion().length() == 2){
                             Symbol var1 = rule.getExpansion().get(0);
                             Symbol var2 = rule.getExpansion().get(1);
-                            if(table1.get(i).get(k).contains(var1) && table1.get(k+1).get(subStringEnd).contains(var2)){
-                                table1.get(i).get(subStringEnd).add(rule.getVariable());
+                            if(derivationTable.get(i-1).get(k-1).contains(var1) && derivationTable.get(k).get(j-1).contains(var2)){
+                                derivationTable.get(i-1).get(j-1).add(rule.getVariable());
                             }
                         }
 
@@ -74,34 +70,10 @@ public class CKYParser implements IParser {
             }
         }
 
-
-        System.out.println(w);
-        System.out.println(returnPrintableTable(table1));
-
         // if S is in table(1, n), accept, else reject
-        return table1.get(0).get(wordLen-1).contains(cfg.getStartVariable());
+        return derivationTable.get(0).get(wordLen-1).contains(cfg.getStartVariable());
 
     }
-
-    public String returnPrintableTable(ArrayList<ArrayList<ArrayList<Symbol>>> table){
-        StringBuilder sb = new StringBuilder();
-
-        for(int i = 0; i < table.size(); i++){
-            for(int j = 0; j < table.get(0).size(); j++) {
-                int count;
-                sb.append(table.get(i).get(j));
-                count = table.get(i).get(j).size();
-                while (count < 10) {
-                    sb.append(' ');
-                    count++;
-                }
-            }
-            sb.append("\n");
-        }
-        return sb.toString();
-
-    }
-
 
     @Override
     public ParseTreeNode generateParseTree(ContextFreeGrammar cfg, Word w) {

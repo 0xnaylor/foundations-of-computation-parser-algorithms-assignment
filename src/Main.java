@@ -38,43 +38,26 @@ class Main {
 
 		ContextFreeGrammar cfg = MyGrammar.makeGrammar();
 
-//		ContextFreeGrammar simpleCnf = ContextFreeGrammar.simpleCNF();
-//		Word testWord = new Word("0011");
-//		System.out.println("Is '" + testWord + "' recognised by the simpleCnf: " + parser.isInLanguage(simpleCnf, testWord));
+//		Word word1 = new Word("1+0");
+//		Word word2 = new Word("01");
+//		Word word3 = new Word("*-*");
+//		Parser parser = new Parser();
 //
-//		Word testWord2 = Word.emptyWord;
-//		System.out.println("Is '" + testWord2 + "' recognised by the simpleCnf: " + parser.isInLanguage(simpleCnf, testWord2));
-//
-//
-//		System.out.println("Here is the grammar");
-//		System.out.println(simpleCnf);
+//		System.out.println("Running Brute Force Parser");
+//		System.out.println("Calling parser.isInLanguage() on test string " + word3 + " returns: " + parser.isInLanguage(cfg, word3));
+//		System.out.println("Calling parser.generateParseTree() on test string " + word3 + " returns: \n" + parser.generateParseTree(cfg, word3));
 
-		Word word1 = new Word("1+0");
-		Word word2 = new Word("01");
-		Word word3 = new Word("*-*");
-		Parser parser = new Parser();
-
-//		System.out.println("Is '" + word1 + "' recognised by the CFG: " + parser.isInLanguage(cfg, word1));
-//		System.out.println("Is '" + word2 + "' recognised by the CFG: " + parser.isInLanguage(cfg, word2));
-//		System.out.println("Is '" + word3 + "' recognised by the CFG: " + parser.isInLanguage(cfg, word3));
-
-
-//		System.out.println("Parse Tree: \n");
-//		System.out.println(parser.generateParseTree(cfg, word1));
-
-		System.out.println(cfg);
 		IParser ckyParser = new CKYParser();
-//		System.out.println("is " + word1 + " in cfg: "+ ckyParser.isInLanguage(cfg, word1));
 
 		Word word4 = new Word("1*-0*-1+0*-1");
 		Word word5 = new Word("0+-1*-0+1*1");
 		Word word6 = new Word("1*0+--1+0*1");
 		Word word7 = new Word("1*0+0-1+1+0+-0");
 
-		System.out.println("is " + word4 + " in cfg: "+ ckyParser.isInLanguage(cfg, word4));
-		System.out.println("is " + word5 + " in cfg: "+ ckyParser.isInLanguage(cfg, word5));
-		System.out.println("is " + word6 + " in cfg: "+ ckyParser.isInLanguage(cfg, word6));
-		System.out.println("is " + word4 + " in cfg: "+ ckyParser.isInLanguage(cfg, word7));
+		System.out.println("Running CKY Parser");
+		System.out.println("Calling parser.isInLanguage() on test string " + word7 + " returns: " + ckyParser.isInLanguage(cfg, word7));
+		System.out.println("\nI was unable to implement generateParseTree for the CKY parser. Therefore: ");
+		System.out.println("Calling parser.generateParseTree() on test string " + word7 + " returns: \n" + ckyParser.generateParseTree(cfg, word7));
 
 
 	}
