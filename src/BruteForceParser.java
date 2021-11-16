@@ -5,7 +5,7 @@ import computation.derivation.*;
 
 import java.util.*;
 
-public class Parser implements IParser {
+public class BruteForceParser implements IParser {
 
   public boolean isInLanguage(ContextFreeGrammar cfg, Word w){
 

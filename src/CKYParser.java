@@ -42,9 +42,9 @@ public class CKYParser implements IParser {
             for (Rule rule:rules) {
                 Symbol expansion = rule.getExpansion().get(0);
                 Symbol terminal = w.get(i);
-               if(expansion.equals(terminal)){
-                   derivationTable.get(i).get(i).add(rule.getVariable());
-               }
+                if(expansion.equals(terminal)){
+                    derivationTable.get(i).get(i).add(rule.getVariable());
+                }
             }
 
         }

@@ -6,17 +6,12 @@
  * 
  */
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
 import computation.contextfreegrammar.*;
-import computation.derivation.Derivation;
 import computation.parser.*;
 import computation.parsetree.*;
-
-import javax.naming.Context;
 
 class Main {
 
@@ -27,26 +22,15 @@ class Main {
 	// The parser we will test. 
 	// If you create a new class, add your constructor here instead e.g.
 	// private static IParser parser = new MyParser();
-	private static IParser parser = new Parser();
+	private static IParser parser = new BruteForceParser();
 
 	public static void customCode() {
-		// You can write your own custom code here and run it with option 3.
-		// Good for testing your code works!
-		// Any code here is totally informal and does not count towards your submission.
-
-		// Below is the kind of code you might want to write to test your parser
-
 		ContextFreeGrammar cfg = MyGrammar.makeGrammar();
+		runBruteForceParser(cfg);
+		runCkyParser(cfg);
+	}
 
-//		Word word1 = new Word("1+0");
-//		Word word2 = new Word("01");
-//		Word word3 = new Word("*-*");
-//		Parser parser = new Parser();
-//
-//		System.out.println("Running Brute Force Parser");
-//		System.out.println("Calling parser.isInLanguage() on test string " + word3 + " returns: " + parser.isInLanguage(cfg, word3));
-//		System.out.println("Calling parser.generateParseTree() on test string " + word3 + " returns: \n" + parser.generateParseTree(cfg, word3));
-
+	private static void runCkyParser(ContextFreeGrammar cfg) {
 		IParser ckyParser = new CKYParser();
 
 		Word word4 = new Word("1*-0*-1+0*-1");
@@ -54,11 +38,51 @@ class Main {
 		Word word6 = new Word("1*0+--1+0*1");
 		Word word7 = new Word("1*0+0-1+1+0+-0");
 
-		System.out.println("Running CKY Parser");
+		System.out.println("Running CKY Parser with string: " + word4);
+		System.out.println("Calling parser.isInLanguage() on test string " + word4 + " returns: " + ckyParser.isInLanguage(cfg, word4));
+		System.out.println("\nI was unable to implement generateParseTree for the CKY parser. Therefore: ");
+		System.out.println("Calling parser.generateParseTree() on test string " + word4 + " returns: \n" + ckyParser.generateParseTree(cfg, word4));
+		System.out.println("==================================================================================\n");
+
+		System.out.println("Running CKY Parser with string: " + word5);
+		System.out.println("Calling parser.isInLanguage() on test string " + word5 + " returns: " + ckyParser.isInLanguage(cfg, word5));
+		System.out.println("\nI was unable to implement generateParseTree for the CKY parser. Therefore: ");
+		System.out.println("Calling parser.generateParseTree() on test string " + word5 + " returns: \n" + ckyParser.generateParseTree(cfg, word5));
+		System.out.println("==================================================================================\n");
+
+		System.out.println("Running CKY Parser with string: " + word6);
+		System.out.println("Calling parser.isInLanguage() on test string " + word6 + " returns: " + ckyParser.isInLanguage(cfg, word6));
+		System.out.println("\nI was unable to implement generateParseTree for the CKY parser. Therefore: ");
+		System.out.println("Calling parser.generateParseTree() on test string " + word6 + " returns: \n" + ckyParser.generateParseTree(cfg, word6));
+		System.out.println("==================================================================================\n");
+
+		System.out.println("Running CKY Parser with string: " + word7);
 		System.out.println("Calling parser.isInLanguage() on test string " + word7 + " returns: " + ckyParser.isInLanguage(cfg, word7));
 		System.out.println("\nI was unable to implement generateParseTree for the CKY parser. Therefore: ");
 		System.out.println("Calling parser.generateParseTree() on test string " + word7 + " returns: \n" + ckyParser.generateParseTree(cfg, word7));
+		System.out.println("==================================================================================\n");
+	}
 
+	private static void runBruteForceParser(ContextFreeGrammar cfg) {
+		Word word1 = new Word("1+0");
+		Word word2 = new Word("01");
+		Word word3 = new Word("*-*");
+		IParser parser = new BruteForceParser();
+
+		System.out.println("Running Brute Force Parser with string: " + word1);
+		System.out.println("Calling parser.isInLanguage() on test string " + word1 + " returns: " + parser.isInLanguage(cfg, word1));
+		System.out.println("Calling parser.generateParseTree() on test string " + word1 + " returns: \n" + parser.generateParseTree(cfg, word1));
+		System.out.println("==================================================================================\n");
+
+		System.out.println("Running Brute Force Parser with string: " + word2);
+		System.out.println("Calling parser.isInLanguage() on test string " + word2 + " returns: " + parser.isInLanguage(cfg, word2));
+		System.out.println("Calling parser.generateParseTree() on test string " + word2 + " returns: \n" + parser.generateParseTree(cfg, word2));
+		System.out.println("==================================================================================\n");
+
+		System.out.println("Running Brute Force Parser with string: " + word3);
+		System.out.println("Calling parser.isInLanguage() on test string " + word3 + " returns: " + parser.isInLanguage(cfg, word3));
+		System.out.println("Calling parser.generateParseTree() on test string " + word3 + " returns: \n" + parser.generateParseTree(cfg, word3));
+		System.out.println("==================================================================================\n");
 
 	}
 
